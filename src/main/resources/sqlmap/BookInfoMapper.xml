@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.apabi.booklist.mapper.BookInfoMapper">
+    <resultMap id="bookResult" type="com.apabi.booklist.entity.BookInfo">
+        <result property="id" column="id"/>
+        <result property="metaId" column="meta_id"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="publisher" column="publisher"/>
+        <result property="categoryNum" column="category_num"/>
+        <result property="category" column="category"/>
+        <result property="summary" column="summary"/>
+        <result property="isbn" column="isbn"/>
+        <result property="publishDate" column="publish_date"/>
+        <result property="promulgateDate" column="promulgate_date"/>
+    </resultMap>
+
+    <sql id="commonColumns">
+        <![CDATA[
+        id,
+        `name`,
+        author,
+        publisher,
+        category_num,
+        category,
+        summary,
+        isbn,
+        publish_date,
+        promulgate_date,
+        meta_id
+        ]]>
+    </sql>
+
+    <sql id="dynamicWhere">
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="name != null">
+                AND `name` = #{name}
+            </if>
+            <if test="metaId != null">
+                AND `meta_id` = #{metaId}
+            </if>
+            <if test="author != null">
+                AND `author` = #{author}
+            </if>
+            <if test="publisher != null">
+                AND `publisher` = #{publisher}
+            </if>
+            <if test="categoryNum != null">
+                AND `category_num` = #{categoryNum}
+            </if>
+            <if test="category != null">
+                AND `category` = #{category}
+            </if>
+            <if test="summary != null">
+                AND `summary` = #{summary}
+            </if>
+            <if test="isbn != null">
+                AND `isbn` = #{isbn}
+            </if>
+            <if test="publishDate != null">
+                AND `publish_date` = #{publishDate}
+            </if>
+            <if test="promulgateDate != null">
+                AND `promulgate_date` = #{promulgateDate}
+            </if>
+        </trim>
+    </sql>
+    <sql id="orderBy">
+        <if test="promulgateDate != null">
+            order by #{orderColumn}
+        </if>
+    </sql>
+    <select id="findAll" resultMap="bookResult">
+		select
+        <include refid="commonColumns" />
+        from `book_info`
+        <include refid="orderBy" />
+    </select>
+
+    <select id="findByConditions" resultMap="bookResult">
+        select
+        <include refid="commonColumns" />
+        from `book_info`
+        <include refid="dynamicWhere" />
+        <include refid="orderBy" />
+    </select>
+
+</mapper>
