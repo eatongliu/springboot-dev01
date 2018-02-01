@@ -20,7 +20,7 @@ public class AuthPermissionServiceImpl implements AuthPermissionService{
      * 当前用户可以访问的菜单列表
      */
     @Override
-    @Cacheable("loadPermissions")
+//    @Cacheable("loadPermissions")
     public List<AuthPermission> findMenus(Integer userId, AuthPermission permission) {
         Integer pid = 0;
         if (permission != null) {

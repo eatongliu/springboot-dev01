@@ -1,6 +1,7 @@
 <#assign ctx=request.contextPath />
 <link rel="icon" type="image/x-icon" href="${ctx}/static/images/favicon.ico">
 <link rel="stylesheet" href="${ctx}/static/ace/assets/css/bootstrap.min.css" />
+<link rel="stylesheet" href="${ctx}/static/css/style.css" />
 <link rel="stylesheet" href="${ctx}/static/ace/assets/css/font-awesome.min.css" />
 <link rel="stylesheet" href="${ctx}/static/ace/assets/css/ace.min.css" />
 <link rel="stylesheet" href="${ctx}/static/ace/assets/css/ace-rtl.min.css" />

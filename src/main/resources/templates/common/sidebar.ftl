@@ -39,9 +39,9 @@
         </div>
     </div><!-- #sidebar-shortcuts -->
 
-    <div id="menu-box">
+    <ul class="nav nav-list" id="menu_ul">
 
-    </div>
+    </ul><!-- /.nav-list -->
 <#--<ul class="nav nav-list" id="menu-list">-->
 <#--<@nr2kAuthTag url="/admin/index">-->
 <#--<li class="">-->
@@ -62,66 +62,6 @@
 <#--</@nr2kAuthTag>-->
 
 <#--</ul><!-- /.nav-list &ndash;&gt;-->
-    <script type="text/javascript">
-        $(function () {
-            $.ajax({
-                url: "${ctx}/sidebar",
-                data: {},
-                type: "get",
-                dataType: "json",
-                success: function (result) {
-                    if (result.status === "SUCCESS") {
-                        var currUrl = window.location.href;
-                        var currUri = currUrl.substring(currUrl.indexOf('${ctx}'), currUrl.length);
-                        var data = result.data
-                        var menuBox = $("#menu-box");
-                        menuBox.html(getSubmenu(data, 1));
-                        menuBox.find("a[href='" + currUri + "']").parent("li").addClass("active");
-                    } else {
-                        alert(result.cause)
-                    }
-                },
-                error: function () {
-                    alert("网络请求异常！")
-                }
-            });
-        });
-
-        function getSubmenu(menus, level) {
-            var collector = [];
-
-            if (level++ === 1) {
-                collector.push("<ul class='nav nav-list'>");
-            }else {
-                collector.push("<ul class='submenu'>");
-            }
-
-            menus.map(function (one) {
-                var subMenu = one.subPermission;
-                var hasSubmenu = subMenu != null && subMenu.length > 0;
-
-                collector.push("<li class=''>")
-                if (hasSubmenu) {
-                    collector.push("<a href='javascript:void(0);' class='dropdown-toggle'>")
-                }else {
-                    collector.push("<a href='${ctx}" + one.url +"'>")
-                }
-                var icon = one.icon || 'icon-file'
-                collector.push("<i class='" + icon + "'></i>")
-                collector.push("<span class='menu-text'>" + one.name + "</span>")
-                if (hasSubmenu)
-                    collector.push("<b class='arrow icon-angle-down'></b>")
-                collector.push("</a>")
-
-                if (!hasSubmenu) return
-
-                collector.push(getSubmenu(subMenu, level));
-            })
-
-            collector.push("</ul>")
-            return collector.join('');
-        }
-    </script>
 
     <div class="sidebar-collapse" id="sidebar-collapse">
         <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
@@ -134,3 +74,79 @@
         }
     </script>
 </div>
+
+ <script type="text/javascript">
+     $(function () {
+         $.ajax({
+             url: "${ctx}/sidebar",
+             data: {},
+             type: "get",
+             dataType: "json",
+             success: function (result) {
+                 if (result.status === "SUCCESS") {
+                     var currUrl = window.location.href;
+                     var currUri = currUrl.substring(currUrl.indexOf('${ctx}'), currUrl.length);
+                     var data = result.data
+                     var collector = [];
+                     data.map(function (one) {
+                         var subMenu = one.subPermission;
+                         var hasSubmenu = subMenu != null && subMenu.length > 0;
+
+                         collector.push("<li>")
+                         if (hasSubmenu) {
+                             collector.push("<a href='javascript:void(0);' class='dropdown-toggle'>")
+                         }else {
+                             collector.push("<a href='${ctx}" + one.url +"'>")
+                         }
+                         var icon = one.icon || 'icon-file'
+                         collector.push("<i class='" + icon + "'></i>")
+                         collector.push("<span class='menu-text'>" + one.name + "</span>")
+                         if (hasSubmenu)
+                             collector.push("<b class='arrow icon-angle-down'></b>")
+                         collector.push("</a>")
+                         if (hasSubmenu)
+                             collector.push(getSubmenu(subMenu));
+                     })
+
+                     var menuBox = $("#menu_ul");
+                     menuBox.html(collector.join(''));
+                     var currentLi = menuBox.find("a[href='" + currUri + "']").parent("li");
+                     currentLi.addClass("active");
+                     currentLi.parents("ul.submenu").show();
+                     currentLi.parents("li").addClass("open");
+                 } else {
+                     alert(result.cause)
+                 }
+             },
+             error: function () {
+                 alert("网络请求异常！")
+             }
+         });
+     });
+
+     function getSubmenu(menus) {
+         var collector = [];
+         collector.push("<ul class='submenu'>");
+         menus.map(function (one) {
+             var subMenu = one.subPermission;
+             var hasSubmenu = subMenu != null && subMenu.length > 0;
+
+             collector.push("<li>")
+             if (hasSubmenu) {
+                 collector.push("<a href='javascript:void(0);' class='dropdown-toggle'>")
+             }else {
+                 collector.push("<a href='${ctx}" + one.url +"'>")
+             }
+             var icon = one.icon || 'icon-file'
+             collector.push("<i class='" + icon + "'></i>")
+             collector.push(one.name)
+             if (hasSubmenu)
+                 collector.push("<b class='arrow icon-angle-down'></b>")
+             collector.push("</a>")
+             if (hasSubmenu)
+                 collector.push(getSubmenu(subMenu));
+         })
+         collector.push("</ul>")
+         return collector.join('');
+     }
+ </script>
